@@ -12,7 +12,7 @@ class GraphWidget;
 class Edge : public QGraphicsItem
 {
 public:
-    Edge(GraphWidget *newGraph, Node *sourceNode, Node *destNode);
+    Edge(GraphWidget *newGraph, Node *sourceNode, Node *destNode, QColor edge_color);
     ~Edge() override;
 
     Node *getSourceNode() const;

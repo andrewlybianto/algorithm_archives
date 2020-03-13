@@ -14,8 +14,11 @@ class GraphWindow : public QWidget
 {
     Q_OBJECT
 public:
-    GraphWindow(QWidget *parent = nullptr);
+    GraphWindow(QWidget *parent = nullptr, std::vector<QLineEdit*>* color = nullptr);
     ~GraphWindow();
+
+    bool add_node(int x, int y);
+    bool add_edge(int from, int to);
 
     void forceUpdate();
 
@@ -30,6 +33,7 @@ public slots:
     void restart_widget();
     void run_dfs();
     void run_bfs();
+    void random_graph();
     void destroy();
 
 private:
@@ -58,6 +62,10 @@ private:
 
     QPushButton *dfs_button;
     QPushButton *bfs_button;
+
+    QSpinBox *random_nodes;
+
+    std::vector<QLineEdit*> *object_color;
 };
 
 class GraphWidget : public QGraphicsView
@@ -65,7 +73,7 @@ class GraphWidget : public QGraphicsView
     Q_OBJECT
 
 public:
-    GraphWidget(QWidget *parent = nullptr);
+    GraphWidget(QWidget *parent = nullptr, std::vector<QLineEdit*>* object_color = nullptr);
     ~GraphWidget();
 
     void addNode(qreal new_x, qreal new_y);
@@ -108,11 +116,14 @@ public slots:
 protected:
 
 private:
+    QWidget *root;
     QGraphicsScene *scene;
     QVector<Node*> nodes;
     QVector<bool> isIDTaken;
     QVector<Edge*> edges;
     int n;
+
+    std::vector<QLineEdit*>* colors;
 };
 
 #endif // GRAPH_WINDOW_H

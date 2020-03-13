@@ -1,7 +1,7 @@
 #include "node.h"
 
-Node::Node(GraphWidget *graphWidget, qreal new_x, qreal new_y)
-    : graph(graphWidget), color(DEFAULT_NODE_COLOR)
+Node::Node(GraphWidget *graphWidget, qreal new_x, qreal new_y, QColor node_color)
+    : graph(graphWidget), color(node_color)
 {
     point.setX(new_x);
     point.setY(new_y);
@@ -29,9 +29,9 @@ Node::~Node()
     graph->flipIsIDTaken(getID()-1);
 }
 
-void Node::add_edge(Node* target)
+void Node::add_edge(Node* target, QColor edge_color)
 {
-    Edge *edge = new Edge(graph, this, target);
+    Edge *edge = new Edge(graph, this, target, edge_color);
     graph->addEdgeToEdges(edge);
     graph->addEdgeToScene(edge);
 }
@@ -110,7 +110,7 @@ void Node::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
     painter->setBrush(color);
     painter->drawEllipse(-10, -10, 20, 20);
     QPoint displace = QPoint(-3,-15);
-    QFont font = painter->font() ;
+    QFont font = painter->font();
 
     /* twice the size than the current font size */
     font.setPointSize(font.pointSize() * 2);

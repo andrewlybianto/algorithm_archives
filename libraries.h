@@ -23,9 +23,11 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QInputDialog>
 #include <QQueue>
+#include <QRandomGenerator>
+#include <QTextEdit>
 
 const QColor DEFAULT_NODE_COLOR = "cyan";
 const QColor DEFAULT_EDGE_COLOR = "black";
-const QColor DEFAULT_ALGO_COLOR = "red";
+const QColor DEFAULT_ALGO_COLOR = "magenta";
 
 #endif // LIBRARIES_H
