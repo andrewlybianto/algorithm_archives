@@ -193,8 +193,6 @@ void GraphWindow::add_node()
 
 void GraphWindow::del_node()
 {
-    // BUG when deleting ID 1 and adding again
-
     QPoint point = graph->getNode(id->value())->getPoint();
 
     int x = (point.rx() / NODE_SEPARATION + X_RANGE) * X_NUMBER_OF_POINTS;
@@ -336,6 +334,14 @@ void GraphWidget::addNode(qreal new_x, qreal new_y)
         nodes.push_back(node);
         node->neighbors_push_false();
     }
+    else if(isIDTaken[0] == false)
+    {
+        node->setID(1);
+        isIDTaken[0] = true;
+        nodes[0] = node;
+        if(!(nodes.size() == 1))
+            everyoneFalse(0);
+    }
     else
     {
         bool found = false;
@@ -378,7 +384,7 @@ void GraphWidget::everyoneFalse(int pos)
     {
         if(nodes[i] != nullptr)
         {
-            nodes[i]->setNeighborFalse(pos);
+            nodes[i]->setNeighborFalse(pos + 1);
         }
     }
 }
