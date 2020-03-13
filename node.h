@@ -12,7 +12,7 @@ class GraphWidget;
 class Node : public QGraphicsItem
 {
 public:
-    Node(GraphWidget *graphWidget, qreal new_x, qreal new_y);
+    Node(GraphWidget *graphWidget, qreal new_x, qreal new_y, QColor node_color);
     ~Node() override;
 
     QPoint getPoint() const;
@@ -21,7 +21,7 @@ public:
     void setID(int i);
     int getID() const;
 
-    void add_edge(Node* target);
+    void add_edge(Node* target, QColor edge_color);
 
     Edge* get_edge(int targetID);
 

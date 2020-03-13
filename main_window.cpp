@@ -6,6 +6,8 @@ const QString BTN_FONT = "font: 25pt; color: black;";
 
 MainWindow::MainWindow(QWidget *parent)
 {
+    setAttribute(Qt::WA_DeleteOnClose);
+
     setWindowTitle("Algorithm Archives");
 
     layout = new QGridLayout;
@@ -14,7 +16,7 @@ MainWindow::MainWindow(QWidget *parent)
     setLayout(layout);
 
     // main page, widget index = 0
-    MainPage *main_page = new MainPage;
+    MainPage *main_page = new MainPage(this);
     stacked_widgets->addWidget(main_page->get_content());
     std::vector<QPushButton*> *main_buttons = main_page->get_buttons();
 
@@ -25,7 +27,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(main_buttons->at(3), SIGNAL(clicked()), this, SLOT(destroy()));
 
     // about page, widget index = 1
-    AboutPage *about = new AboutPage;
+    AboutPage *about = new AboutPage(this);
     stacked_widgets->addWidget(about->get_content());
     std::vector<QPushButton*> *about_buttons = about->get_buttons();
 
@@ -33,7 +35,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(about_buttons->at(0), SIGNAL(clicked()), this, SLOT(go_to_main()));
 
     // settings page, widget index = 2
-    SettingsPage *settings = new SettingsPage;
+    SettingsPage *settings = new SettingsPage(this);
+    object_color = settings->get_color();
     stacked_widgets->addWidget(settings->get_content());
     std::vector<QPushButton*> *settings_buttons = settings->get_buttons();
 
@@ -61,6 +64,11 @@ MainWindow::~MainWindow()
     close();
 }
 
+std::vector<QLineEdit*>* MainWindow::get_color() const
+{
+    return object_color;
+}
+
 // Override method to get proper background
 void MainWindow::resizeEvent(QResizeEvent *event)
 {
@@ -78,7 +86,7 @@ void MainWindow::destroy()
 
 void MainWindow::go_to_sim()
 {
-    GraphWindow *gw = new GraphWindow(this);
+    GraphWindow *gw = new GraphWindow(nullptr, get_color());
     gw->show();
 }
 
@@ -95,6 +103,11 @@ void MainWindow::go_to_settings()
 void MainWindow::go_to_main()
 {
     stacked_widgets->setCurrentIndex(0);
+}
+
+Page::Page(QWidget *par)
+{
+    parent = par;
 }
 
 Page::~Page()
@@ -115,7 +128,8 @@ std::vector<QPushButton*>* Page::get_buttons() const
     return buttons;
 }
 
-MainPage::MainPage()
+MainPage::MainPage(QWidget *parent)
+    : Page(parent)
 {
     content = new QWidget;
     layout = new QGridLayout(content);
@@ -165,7 +179,8 @@ QMediaPlayer* MainPage::get_music() const
     return music;
 }
 
-AboutPage::AboutPage()
+AboutPage::AboutPage(QWidget *parent)
+    : Page(parent)
 {
     content = new QWidget;
     layout = new QGridLayout(content);
@@ -201,22 +216,57 @@ AboutPage::~AboutPage()
 
 }
 
-SettingsPage::SettingsPage()
+SettingsPage::SettingsPage(QWidget *parent)
+    : Page(parent)
 {
     content = new QWidget;
     layout = new QGridLayout(content);
+
+    QLabel *node_info = new QLabel();
+    node_info->setText("Node color:");
+    node_info->setStyleSheet("QLabel { font: 20pt; color: black; background-color: white;}");
+    QLineEdit *node_color = new QLineEdit;
+    node_color->setText(DEFAULT_NODE_COLOR.name());
+
+    QLabel *edge_info = new QLabel();
+    edge_info->setText("Edge color:");
+    edge_info->setStyleSheet("QLabel { font: 20pt; color: black; background-color: white;}");
+    QLineEdit *edge_color = new QLineEdit;
+    edge_color->setText(DEFAULT_EDGE_COLOR.name());
+
+    QLabel *algo_info = new QLabel();
+    algo_info->setText("Algorithm color:");
+    algo_info->setStyleSheet("QLabel { font: 20pt; color: black; background-color: white;}");
+    QLineEdit *algo_color = new QLineEdit;
+    algo_color->setText(DEFAULT_ALGO_COLOR.name());
+
+    color = new std::vector<QLineEdit*>();
+
+    // index: 0: node, 1: edge, 2: algorithm
+    color->push_back(node_color);
+    color->push_back(edge_color);
+    color->push_back(algo_color);
+
+    layout->addWidget(node_info, 0, 0);
+    layout->addWidget(node_color, 1, 0);
+    layout->addWidget(edge_info, 2, 0);
+    layout->addWidget(edge_color, 3, 0);
+    layout->addWidget(algo_info, 4, 0);
+    layout->addWidget(algo_color, 5, 0);
 
     // buttons
     buttons = new std::vector<QPushButton*>();
     QPushButton *mute = new QPushButton("Stop music");
     QPushButton *unmute = new QPushButton("Play music");
+
     QPushButton *back = new QPushButton(tr("Back"));
+
 
     buttons->push_back(mute);
     buttons->push_back(unmute);
     buttons->push_back(back);
 
-    int i = 0;
+    int i = 6;
     for(auto it = buttons->begin(); it != buttons->end(); ++it)
     {
         layout->addWidget(*it, i + 1, 0);
@@ -230,4 +280,9 @@ SettingsPage::SettingsPage()
 SettingsPage::~SettingsPage()
 {
 
+}
+
+std::vector<QLineEdit*>* SettingsPage::get_color() const
+{
+    return color;
 }

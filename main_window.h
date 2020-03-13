@@ -17,6 +17,7 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+    std::vector<QLineEdit*>* get_color() const;
     void resizeEvent(QResizeEvent *event) override;
 
 public slots:
@@ -30,17 +31,20 @@ private:
     QStackedWidget *stacked_widgets;
     QLayout *layout;
 
+    std::vector<QLineEdit*>* object_color;
 };
 
 class Page : public QWidget
 {
     Q_OBJECT
 public:
+    Page(QWidget *parent = nullptr);
     QWidget* get_content() const;
     std::vector<QPushButton*>* get_buttons() const;
     virtual ~Page();
 
 protected:
+    QWidget *parent;
     QWidget *content;
     QGridLayout *layout;
     std::vector<QPushButton*> *buttons;
@@ -51,7 +55,7 @@ class MainPage : public Page
 {
     Q_OBJECT
 public:
-    MainPage();
+    MainPage(QWidget *parent = nullptr);
     ~MainPage();
 
     // accessor to content
@@ -65,7 +69,7 @@ class AboutPage : public Page
 {
     Q_OBJECT
 public:
-    AboutPage();
+    AboutPage(QWidget *parent = nullptr);
     ~AboutPage();
 };
 
@@ -73,8 +77,13 @@ class SettingsPage : public Page
 {
     Q_OBJECT
 public:
-    SettingsPage();
+    SettingsPage(QWidget *parent = nullptr);
     ~SettingsPage();
+
+    std::vector<QLineEdit*>* get_color() const;
+
+private:
+    std::vector<QLineEdit*>* color;
 };
 
 #endif // MAIN_WINDOW_H

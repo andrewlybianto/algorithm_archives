@@ -1,7 +1,7 @@
 #include "edge.h"
 
-Edge::Edge(GraphWidget *newGraph, Node *sourceNode, Node *destNode)
-    : graph(newGraph), source(sourceNode), dest(destNode), sourcePoint(sourceNode->getPoint()), destPoint(destNode->getPoint()), color(DEFAULT_EDGE_COLOR)
+Edge::Edge(GraphWidget *newGraph, Node *sourceNode, Node *destNode, QColor edge_color)
+    : graph(newGraph), source(sourceNode), dest(destNode), sourcePoint(sourceNode->getPoint()), destPoint(destNode->getPoint()), color(edge_color)
 {
     dest->setNeighborTrue(getSourceNode()->getID() );
     source->setNeighborTrue(getDestNode()->getID() );
