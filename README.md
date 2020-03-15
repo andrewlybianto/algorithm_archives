@@ -19,3 +19,5 @@ To run DFS or BFS, the user can specify a start node by inputting an ID number i
 After DFS or BFS, if the user wants to reuse a graph, they can click Reset Graph.
 
 The user can also specify which colors they would like the nodes and edges to be in the About Window.
+
+Music: from Minecraft. Copyright (C) 2011 Daniel Rosenfeld - All Rights Reserved
