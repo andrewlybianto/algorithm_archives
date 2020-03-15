@@ -160,7 +160,8 @@ AboutPage::AboutPage(QWidget *parent)
     // contents
     QLabel *text = new QLabel;
     text->setText("Programmers: Gilbert Neuner, Daryan Sugandhi, Esam Izzat, Andrew Lybianto\n"
-                  "Description: This project executes Depth First Search and Breadth First Search on a graph inputted by the user.");
+                  "Description: This project executes Depth First Search and Breadth First Search on graphs.\n"
+                  "Instructions: https://github.com/gilbertneuner/algorithm_archives/blob/master/README.md");
     text->setStyleSheet("QLabel { font: 40pt; color: black; background-color: white;}");
     text->setAlignment(Qt::AlignVCenter);
     text->setWordWrap(true);
