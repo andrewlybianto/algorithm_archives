@@ -12,6 +12,7 @@ const int Y_NUMBER_OF_POINTS = HEIGHT / NODE_SEPARATION + 1;
 const int TOT_NUMBER_OF_POINTS = X_NUMBER_OF_POINTS * Y_NUMBER_OF_POINTS;
 
 GraphWindow::GraphWindow(QWidget *parent, const std::vector<QLineEdit*>& col)
+    : QMainWindow(parent)
 {
     setAttribute(Qt::WA_DeleteOnClose);
     setParent(parent);
@@ -21,9 +22,11 @@ GraphWindow::GraphWindow(QWidget *parent, const std::vector<QLineEdit*>& col)
     setWindowTitle("Algorithm");
 
     GraphWidget *graph = new GraphWidget(this, col);
+    QWidget *widget = new QWidget;
+    setCentralWidget(widget);
 
     QGridLayout *layout = new QGridLayout;
-    setLayout(layout);
+    widget->setLayout(layout);
     layout->addWidget(graph, 0 , 1);
 
     QWidget *interface_section = new QWidget;

@@ -71,7 +71,7 @@ void MainWindow::resizeEvent(QResizeEvent *event)
 
 void MainWindow::go_to_sim()
 {
-    GraphWindow *gw = new GraphWindow(nullptr, color_fields);
+    GraphWindow *gw = new GraphWindow(this, color_fields);
     gw->show();
 }
 

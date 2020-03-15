@@ -10,7 +10,7 @@ class GraphWidget;
 class Node;
 class Edge;
 
-class GraphWindow : public QWidget
+class GraphWindow : public QMainWindow
 {
     Q_OBJECT
 public:
