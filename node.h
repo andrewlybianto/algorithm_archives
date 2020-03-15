@@ -22,7 +22,6 @@ public:
     int getID() const;
 
     void add_edge(Node* target, QColor edge_color);
-
     Edge* get_edge(int targetID);
 
     void setNeighborTrue(size_t id);
@@ -39,8 +38,6 @@ public:
     QRectF boundingRect() const override;
     QPainterPath shape() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
-
-protected:
 
 private:
     QVector<bool> neighbors;

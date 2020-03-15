@@ -15,8 +15,8 @@ public:
     Edge(GraphWidget *newGraph, Node *sourceNode, Node *destNode, QColor edge_color);
     ~Edge() override;
 
-    Node *getSourceNode() const;
-    Node *getDestNode() const;
+    Node* getSourceNode() const;
+    Node* getDestNode() const;
 
     void setColor(QColor newColor);
 

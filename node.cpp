@@ -6,14 +6,13 @@ Node::Node(GraphWidget *graphWidget, qreal new_x, qreal new_y, QColor node_color
     point.setX(new_x);
     point.setY(new_y);
 
-    QVector<bool> dummy(graph->getN() - 1, false);
-    neighbors = dummy;
+    neighbors = QVector<bool>(graph->getN() - 1, false);
 }
 
 Node::~Node()
 {
     //every node that has this as a neighbor should not anymore
-    for(size_t i = 0; i < neighbors.size(); ++i)
+    for(int i = 0; i < neighbors.size(); ++i)
     {
         if(neighbors[i])
         {
@@ -33,22 +32,25 @@ void Node::add_edge(Node* target, QColor edge_color)
 {
     Edge *edge = new Edge(graph, this, target, edge_color);
     graph->addEdgeToEdges(edge);
-    graph->addEdgeToScene(edge);
+    graph->scene()->addItem(edge);
 }
 
 Edge* Node::get_edge(int targetID)
 {
-    for(size_t i = 0; i < graph->getEdges().size(); ++i)
+    for(int i = 0; i < graph->getEdges().size(); ++i)
     {
-        if(graph->getEdges()[i]->getSourceNode() == this && graph->getEdges()[i]->getDestNode() == graph->getNode(targetID))
+        if(graph->getEdges()[i]->getSourceNode() == this
+                && graph->getEdges()[i]->getDestNode() == graph->getNode(targetID))
         {
             return graph->getEdges()[i];
         }
-        else if(graph->getEdges()[i]->getDestNode() == this && graph->getEdges()[i]->getSourceNode() == graph->getNode(targetID))
+        else if(graph->getEdges()[i]->getDestNode() == this
+                && graph->getEdges()[i]->getSourceNode() == graph->getNode(targetID))
         {
             return graph->getEdges()[i];
         }
     }
+    return nullptr;
 }
 
 void Node::setNeighborTrue(size_t id)
@@ -104,7 +106,7 @@ QPainterPath Node::shape() const
     return path;
 }
 
-void Node::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *)
+void Node::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     painter->setPen(QPen(Qt::black, 0));
     painter->setBrush(color);
