@@ -11,240 +11,290 @@ const int X_NUMBER_OF_POINTS = WIDTH / NODE_SEPARATION + 1;
 const int Y_NUMBER_OF_POINTS = HEIGHT / NODE_SEPARATION + 1;
 const int TOT_NUMBER_OF_POINTS = X_NUMBER_OF_POINTS * Y_NUMBER_OF_POINTS;
 
-GraphWindow::GraphWindow(QWidget *parent, std::vector<QLineEdit*>* color)
+GraphWindow::GraphWindow(QWidget *parent, const std::vector<QLineEdit*>& col)
 {
     setAttribute(Qt::WA_DeleteOnClose);
+    setParent(parent);
 
     qsrand(time(NULL));
 
-    root = parent;
-    object_color = color;
-
     setWindowTitle("Algorithm");
 
-    graph = new GraphWidget(this, object_color);
+    GraphWidget *graph = new GraphWidget(this, col);
 
-    coordinates = new QVector<bool>(TOT_NUMBER_OF_POINTS, false);
-
-    content = new QWidget;
-    layout = new QGridLayout(content);
+    QGridLayout *layout = new QGridLayout;
     setLayout(layout);
     layout->addWidget(graph, 0 , 1);
 
-    buttons = new QWidget;
-    QGridLayout *button_layout = new QGridLayout(buttons);
-    layout->addWidget(buttons, 0, 0);
+    QWidget *interface_section = new QWidget;
+    QGridLayout *interface_layout = new QGridLayout(interface_section);
+    layout->addWidget(interface_section, 0, 0);
 
-    // objects
-    objects = new std::vector<QWidget*>();
-
-    x_coord = new QSpinBox;
+    QSpinBox *x_coord = new QSpinBox;
     x_coord->setRange((-1)*X_RANGE, X_RANGE);
     x_coord->setPrefix("x: ");
-    y_coord = new QSpinBox;
+    QSpinBox *y_coord = new QSpinBox;
     y_coord->setRange((-1)*Y_RANGE, Y_RANGE);
     y_coord->setPrefix("y: ");
     QPushButton *add_node = new QPushButton("Add node");
 
-    id = new QSpinBox;
+    QSpinBox *id = new QSpinBox;
     id->setPrefix("Select node: ");
     id->setRange(1, TOT_NUMBER_OF_POINTS);
     QPushButton *del_node = new QPushButton("Delete node");
 
-    from = new QSpinBox;
-    from->setPrefix("From node: ");
-    from->setRange(1, TOT_NUMBER_OF_POINTS);
-    to = new QSpinBox;
-    to->setPrefix("To node: ");
-    to->setRange(2, TOT_NUMBER_OF_POINTS);
-    add_edge_button = new QPushButton("Add edge");
-    del_edge_button = new QPushButton("Delete edge");
+    QSpinBox *from_node = new QSpinBox;
+    from_node->setPrefix("From node: ");
+    from_node->setRange(1, TOT_NUMBER_OF_POINTS);
+    QSpinBox *to_node = new QSpinBox;
+    to_node->setPrefix("To node: ");
+    to_node->setRange(2, TOT_NUMBER_OF_POINTS);
+    QPushButton *add_edge_button = new QPushButton("Add edge");
+    QPushButton *del_edge_button = new QPushButton("Delete edge");
 
-    start_id = new QSpinBox;
-    start_id->setPrefix("Select start node: ");
-    start_id->setRange(1, TOT_NUMBER_OF_POINTS);
-    dfs_button = new QPushButton("DFS");
-    bfs_button = new QPushButton("BFS");
-    // QPushButton *dijkstra_button = new QPushButton("Dijkstra");
-    random_nodes = new QSpinBox;
+    QSpinBox *source_id = new QSpinBox;
+    source_id->setPrefix("Select start node: ");
+    source_id->setRange(1, TOT_NUMBER_OF_POINTS);
+    QPushButton *dfs_button = new QPushButton("DFS");
+    QPushButton *bfs_button = new QPushButton("BFS");
+    QSpinBox *random_nodes = new QSpinBox;
     random_nodes->setPrefix("Select number of random nodes: ");
     random_nodes->setRange(2, TOT_NUMBER_OF_POINTS);
     QPushButton *random_button = new QPushButton("Randomize graph");
     QPushButton *reset_graph = new QPushButton("Reset graph");
 
-    QPushButton *clear_button = new QPushButton("Clear graph");
     QPushButton *home = new QPushButton("Exit");
 
-    objects->push_back(x_coord);
-    objects->push_back(y_coord);
-    objects->push_back(add_node);
-    objects->push_back(id);
-    objects->push_back(del_node);
-    objects->push_back(from);
-    objects->push_back(to);
-    objects->push_back(add_edge_button);
-    objects->push_back(del_edge_button);
-    objects->push_back(start_id);
-    objects->push_back(dfs_button);
-    objects->push_back(bfs_button);
-    // objects->push_back(dijkstra_button);
-    objects->push_back(random_nodes);
-    objects->push_back(random_button);
-    objects->push_back(reset_graph);
+    std::vector<QWidget*> objects;
+    objects.push_back(x_coord);
+    objects.push_back(y_coord);
+    objects.push_back(add_node);
+    objects.push_back(id);
+    objects.push_back(del_node);
+    objects.push_back(from_node);
+    objects.push_back(to_node);
+    objects.push_back(add_edge_button);
+    objects.push_back(del_edge_button);
+    objects.push_back(source_id);
+    objects.push_back(dfs_button);
+    objects.push_back(bfs_button);
+    objects.push_back(random_nodes);
+    objects.push_back(random_button);
+    objects.push_back(reset_graph);
 
-    objects->push_back(clear_button);
-    objects->push_back(home);
+    objects.push_back(home);
 
     int i = 0;
-
-    for(std::vector<QWidget*>::const_iterator it = objects->begin(); it != objects->end(); ++it)
+    for(auto it : objects)
     {
-        button_layout->addWidget(*it, i + 1, 0);
+        interface_layout->addWidget(it, i + 1, 0);
         ++i;
-        button_layout->setAlignment(*it, Qt::AlignHCenter);
+        interface_layout->setAlignment(it, Qt::AlignHCenter);
     }
 
-    connect(add_node, SIGNAL(clicked()), this, SLOT(add_node()));
-    connect(del_node, SIGNAL(clicked()), this, SLOT(del_node()));
-    connect(add_edge_button, SIGNAL(clicked()), this, SLOT(add_edge()));
-    connect(del_edge_button, SIGNAL(clicked()), this, SLOT(del_edge()));
-    connect(dfs_button, SIGNAL(clicked()), this, SLOT(run_dfs()));
-    connect(bfs_button, SIGNAL(clicked()), this, SLOT(run_bfs()));
+    connect(x_coord, SIGNAL(valueChanged(int)), graph, SIGNAL(x_coord_changed(int)));
+    connect(y_coord, SIGNAL(valueChanged(int)), graph, SIGNAL(y_coord_changed(int)));
+    connect(id, SIGNAL(valueChanged(int)), graph, SIGNAL(selected_id_changed(int)));
+    connect(from_node, SIGNAL(valueChanged(int)), graph, SIGNAL(from_node_changed(int)));
+    connect(to_node, SIGNAL(valueChanged(int)), graph, SIGNAL(to_node_changed(int)));
+    connect(source_id, SIGNAL(valueChanged(int)), graph, SIGNAL(source_id_changed(int)));
+    connect(random_nodes, SIGNAL(valueChanged(int)), graph, SIGNAL(random_nodes_changed(int)));
 
-    connect(random_button, SIGNAL(clicked()), this, SLOT(random_graph()));
-    connect(reset_graph, SIGNAL(clicked()), this, SLOT(reset_graph()));
-    connect(clear_button, SIGNAL(clicked()), this, SLOT(restart_widget()));
-    connect(home, SIGNAL(clicked()), this, SLOT(destroy()));
+    connect(add_node, SIGNAL(clicked()), graph, SLOT(add_node()));
+    connect(del_node, SIGNAL(clicked()), graph, SLOT(del_node()));
+    connect(add_edge_button, SIGNAL(clicked()), graph, SLOT(add_edge()));
+    connect(del_edge_button, SIGNAL(clicked()), graph, SLOT(del_edge()));
+    connect(dfs_button, SIGNAL(clicked()), graph, SLOT(run_dfs()));
+    connect(bfs_button, SIGNAL(clicked()), graph, SLOT(run_bfs()));
+
+    connect(random_button, SIGNAL(clicked()), graph, SLOT(generate_random_graph()));
+    connect(reset_graph, SIGNAL(clicked()), graph, SLOT(reset_graph()));
+    connect(home, SIGNAL(clicked()), this, SLOT(close()));
 }
 
-GraphWindow::~GraphWindow()
+GraphWidget::GraphWidget(QWidget *parent, const std::vector<QLineEdit*>& col)
+    : QGraphicsView(parent), color_fields(col)
 {
-    delete coordinates;
-    delete objects;
-    delete buttons;
-    delete graph;
-    delete layout;
-    delete content;
-    close();
+    x_coord = 0;
+    y_coord = 0;
+    selected_id = 1;
+    from_node = 1;
+    to_node = 2;
+    source_id = 1;
+    random_nodes = 2;
+
+    setParent(parent);
+
+    setStyleSheet("background-color: white;");
+
+    n = 0;
+    QGraphicsScene *scene = new QGraphicsScene(this);
+    scene->setSceneRect(X_COORD, Y_COORD, WIDTH, HEIGHT);
+    setScene(scene);
+    scale(qreal(0.8), qreal(0.8));
+    setMinimumSize(WIDTH, HEIGHT);
+    setWindowTitle(tr("Simulate"));
+
+    coordinates = QVector<bool>(TOT_NUMBER_OF_POINTS, false);
+
+    connect(this, SIGNAL(x_coord_changed(int)), this, SLOT(set_x_coord(int)));
+    connect(this, SIGNAL(y_coord_changed(int)), this, SLOT(set_y_coord(int)));
+    connect(this, SIGNAL(selected_id_changed(int)), this, SLOT(set_selected_id(int)));
+    connect(this, SIGNAL(from_node_changed(int)), this, SLOT(set_from_node(int)));
+    connect(this, SIGNAL(to_node_changed(int)), this, SLOT(set_to_node(int)));
+    connect(this, SIGNAL(source_id_changed(int)), this, SLOT(set_source_id(int)));
+    connect(this, SIGNAL(random_nodes_changed(int)), this, SLOT(set_random_nodes(int)));
 }
 
-bool GraphWindow::add_node(int x, int y)
+GraphWidget::~GraphWidget()
 {
-    int x_index = (x + X_RANGE) * X_NUMBER_OF_POINTS;
-    int y_index = y + Y_RANGE;
-
-    if(!coordinates->at(x_index + y_index))
+    for(auto i : nodes)
     {
-        graph->addNode(x * NODE_SEPARATION, (-1)* y * NODE_SEPARATION);
-        coordinates->replace(x_index + y_index, true);
+        delete i;
+        i = nullptr;
+    }
+}
+
+void GraphWidget::set_x_coord(int x)
+{
+    x_coord = x;
+}
+
+void GraphWidget::set_y_coord(int y)
+{
+    y_coord = y;
+}
+
+void GraphWidget::set_selected_id(int id)
+{
+    selected_id = id;
+}
+
+void GraphWidget::set_from_node(int id)
+{
+    from_node = id;
+}
+
+void GraphWidget::set_to_node(int id)
+{
+    to_node = id;
+}
+
+void GraphWidget::set_source_id(int id)
+{
+    source_id = id;
+}
+
+void GraphWidget::set_random_nodes(int value)
+{
+    random_nodes = value;
+}
+
+bool GraphWidget::add_node()
+{
+    int x_index = (x_coord + X_RANGE) * X_NUMBER_OF_POINTS;
+    int y_index = y_coord + Y_RANGE;
+
+    if(!coordinates[x_index + y_index])
+    {
+        addNode(x_coord * NODE_SEPARATION, (-1)* y_coord * NODE_SEPARATION);
+        coordinates.replace(x_index + y_index, true);
+        update();
         return true;
     }
     return false;
 }
 
-bool GraphWindow::add_edge(int from, int to)
+bool GraphWidget::del_node()
 {
-    if(from == to)
+    if(selected_id > nodes.size() || (!nodes[selected_id - 1]) )
         return false;
 
-    for(auto it = graph->getEdges().begin(); it != graph->getEdges().end(); ++it)
+    QPoint point = getNode(selected_id)->getPoint();
+
+    int x_index = (point.rx() / NODE_SEPARATION + X_RANGE) * X_NUMBER_OF_POINTS;
+    int y_index = (-1)*point.ry() / NODE_SEPARATION + Y_RANGE;
+
+    getNode(selected_id)->~Node();
+    coordinates.replace(x_index + y_index, false);
+    update();
+    return true;
+}
+
+bool GraphWidget::add_edge()
+{
+    if(!isValidEdge(from_node, to_node))
+        return false;
+
+    for(auto it : edges)
     {
-        if( (*it)->getSourceNode()->getID() == from && (*it)->getDestNode()->getID() == to )
+        if(it->getSourceNode()->getID() == from_node && it->getDestNode()->getID() == to_node)
         {
             return false;
         }
 
-        if( (*it)->getSourceNode()->getID() == to && (*it)->getDestNode()->getID() == from )
+        if(it->getSourceNode()->getID() == to_node && it->getDestNode()->getID() == from_node)
         {
             return false;
         }
     }
 
-    graph->getNode(from)->add_edge(graph->getNode(to), QColor(object_color->at(1)->text()));
+    getNode(from_node)->add_edge(getNode(to_node), QColor(color_fields[1]->text()));
+    update();
     return true;
 }
 
-void GraphWindow::forceUpdate()
+bool GraphWidget::del_edge()
 {
-    graph->getScene()->update();
+    if(!isValidEdge(from_node, to_node))
+        return false;
+
+    if(getNode(from_node)->get_edge(to_node) == nullptr)
+        return false;
+
+    if(getNode(to_node)->get_edge(from_node) == nullptr)
+        return false;
+
+    getNode(from_node)->get_edge(to_node)->~Edge();
+    update();
+    return true;
 }
 
-void GraphWindow::restart_widget()
+void GraphWidget::reset_graph()
 {
-    GraphWindow *gw = new GraphWindow(nullptr, object_color);
-    this->~GraphWindow();
-
-    gw->show();
+    setAllExploredFalse();
+    setAllDefaultEdgeColor();
+    update();
 }
 
-void GraphWindow::reset_graph()
+void GraphWidget::run_dfs()
 {
-    graph->everyoneUnexplored();
-    graph->everyoneDefaultEdgeColor();
-    forceUpdate();
+    setAllExploredFalse();
+    setAllDefaultEdgeColor();
+    DFS(source_id);
+    update();
 }
 
-void GraphWindow::add_node()
+void GraphWidget::run_bfs()
 {
-    add_node(x_coord->value(), y_coord->value());
-
-    forceUpdate();
+    setAllExploredFalse();
+    setAllDefaultEdgeColor();
+    BFS(source_id);
+    update();
 }
 
-void GraphWindow::del_node()
-{
-    QPoint point = graph->getNode(id->value())->getPoint();
-
-    int x = (point.rx() / NODE_SEPARATION + X_RANGE) * X_NUMBER_OF_POINTS;
-    int y = (-1)*point.ry() / NODE_SEPARATION + Y_RANGE;
-
-    graph->getNode(id->value())->~Node();
-    coordinates->replace(x + y, false);
-    forceUpdate();
-}
-
-void GraphWindow::add_edge()
-{
-    add_edge(from->value(), to->value());
-
-    forceUpdate();
-}
-
-void GraphWindow::del_edge()
-{
-    if(from->value() == to->value())
-        return;
-
-    graph->getNode(from->value())->get_edge(to->value())->~Edge();
-    forceUpdate();
-}
-
-void GraphWindow::run_dfs()
-{
-    graph->everyoneUnexplored();
-    graph->everyoneDefaultEdgeColor();
-
-    graph->DFS(start_id->value());
-    forceUpdate();
-}
-
-void GraphWindow::run_bfs()
-{
-    graph->everyoneUnexplored();
-    graph->everyoneDefaultEdgeColor();
-
-    graph->BFS(start_id->value());
-    forceUpdate();
-}
-
-void GraphWindow::random_graph()
+void GraphWidget::generate_random_graph()
 {
     // CHECK sometimes crashes due to too many loop in adding edges, better algorithm needed
-
-    int num_nodes = random_nodes->value();
+    if(!(nodes.empty()))
+    {
+        QErrorMessage *err = new QErrorMessage;
+        err->showMessage("Please open a new window!");
+        return;
+    }
 
     // prompt for number of edges
-    QDialog *prompt = new QDialog(this);
+    QDialog *prompt = new QDialog;
     QWidget *content = new QWidget;
     QGridLayout *layout = new QGridLayout(content);
     prompt->setLayout(layout);
@@ -252,7 +302,7 @@ void GraphWindow::random_graph()
     info->setText("Select number of edges:");
     QSpinBox *edges = new QSpinBox;
     // theorem from graph theory
-    edges->setRange(num_nodes - 1, num_nodes * (num_nodes - 1) / 2);
+    edges->setRange(random_nodes - 1, random_nodes * (random_nodes - 1) / 2);
     QPushButton *ok_button = new QPushButton("Confirm");
 
     layout->addWidget(info, 0, 0);
@@ -265,58 +315,35 @@ void GraphWindow::random_graph()
     int counter_nodes = 0;
     int counter_edges = 0;
 
-    while(counter_nodes < num_nodes)
+    while(counter_nodes < random_nodes)
     {
-        int x = (qrand() % X_NUMBER_OF_POINTS) - X_RANGE;
-        int y = (qrand() % Y_NUMBER_OF_POINTS) - Y_RANGE;
+        int temp_x = x_coord;
+        int temp_y = y_coord;
+        x_coord = (qrand() % X_NUMBER_OF_POINTS) - X_RANGE;
+        y_coord = (qrand() % Y_NUMBER_OF_POINTS) - Y_RANGE;
 
-        if(add_node(x, y))
+        if(add_node())
             counter_nodes++;
+
+        x_coord = temp_x;
+        y_coord = temp_y;
     }
 
     while(counter_edges < num_edges)
     {
-        int from = (qrand() % num_nodes) + 1;
-        int to = (qrand() % num_nodes) + 1;
+        int temp_from = from_node;
+        int temp_to = to_node;
+        from_node = (qrand() % random_nodes) + 1;
+        to_node = (qrand() % random_nodes) + 1;
 
-        if(add_edge(from, to))
+        if(add_edge())
             counter_edges++;
+
+        from_node = temp_from;
+        to_node = temp_to;
     }
 
-    forceUpdate();
-}
-
-void GraphWindow::destroy()
-{
-    this->~GraphWindow();
-}
-
-GraphWidget::GraphWidget(QWidget *parent, std::vector<QLineEdit*>* object_color)
-    : QGraphicsView(parent)
-{
-    root = parent;
-    colors = object_color;
-
-    setStyleSheet("background-color: white;");
-
-    n = 0;
-    scene = new QGraphicsScene(this);
-    scene->setSceneRect(X_COORD, Y_COORD, WIDTH, HEIGHT);
-    setScene(scene);
-    scale(qreal(0.8), qreal(0.8));
-    setMinimumSize(WIDTH, HEIGHT);
-    setWindowTitle(tr("Simulate"));
-}
-
-GraphWidget::~GraphWidget()
-{
-    delete scene;
-    close();
-}
-
-QGraphicsScene* GraphWidget::getScene() const
-{
-    return scene;
+    update();
 }
 
 void GraphWidget::addNode(qreal new_x, qreal new_y)
@@ -324,7 +351,7 @@ void GraphWidget::addNode(qreal new_x, qreal new_y)
     ++n;
 
     //construct node
-    Node *node = new Node(this, new_x, new_y, QColor(colors->at(0)->text()));
+    Node *node = new Node(this, new_x, new_y, QColor(color_fields[0]->text()));
 
     //set ID
     if(isIDTaken.empty())
@@ -346,7 +373,7 @@ void GraphWidget::addNode(qreal new_x, qreal new_y)
     {
         bool found = false;
 
-        for(size_t i = 0; i < isIDTaken.size(); ++i)
+        for(int i = 0; i < isIDTaken.size(); ++i)
         {
             if(!isIDTaken[i])
             {
@@ -369,7 +396,7 @@ void GraphWidget::addNode(qreal new_x, qreal new_y)
     }
 
     //display node
-    scene->addItem(node);
+    scene()->addItem(node);
     node->setPos(new_x, new_y);
 }
 
@@ -380,22 +407,22 @@ Node* GraphWidget::getNode(int id) const
 
 void GraphWidget::everyoneFalse(int pos)
 {
-    for(size_t i = 0; i < nodes.size(); ++i)
+    for(auto it : nodes)
     {
-        if(nodes[i] != nullptr)
+        if(it != nullptr)
         {
-            nodes[i]->setNeighborFalse(pos + 1);
+            it->setNeighborFalse(pos + 1);
         }
     }
 }
 
 void GraphWidget::everyonePushFalse()
 {
-    for(size_t i = 0; i < nodes.size(); ++i)
+    for(auto it : nodes)
     {
-        if(nodes[i] != nullptr)
+        if(it != nullptr)
         {
-            nodes[i]->neighbors_push_false();
+            it->neighbors_push_false();
         }
     }
 }
@@ -427,11 +454,6 @@ void GraphWidget::addEdgeToEdges(Edge* toAdd)
     edges.push_back(toAdd);
 }
 
-void GraphWidget::addEdgeToScene(Edge* toAdd)
-{
-    scene->addItem(toAdd);
-}
-
 void GraphWidget::removeEdgeFromEdges(Edge* toRemove)
 {
     edges.erase(std::remove(edges.begin(), edges.end(), toRemove), edges.end());
@@ -442,35 +464,44 @@ int GraphWidget::getN() const
     return n;
 }
 
-QVector<Node*> GraphWidget::getNodes() const
+bool GraphWidget::isValidEdge(int from, int to)
 {
-    return nodes;
+    if(from == to)
+        return false;
+
+    if(from > nodes.size() || (!nodes[from - 1]))
+        return false;
+
+    if(to > nodes.size() || (!nodes[to - 1]))
+        return false;
+
+    return true;
 }
 
 void GraphWidget::DFS(int startID)
 {
     getNode(startID)->setExploredTrue();
-    for(size_t i = 0; i < getNode(startID)->get_neighbors().size(); ++i)
+    for(int i = 0; i < getNode(startID)->get_neighbors().size(); ++i)
     {
         if(getNode(startID)->get_neighbors()[i] && !(getNode(i+1)->getExplored()))
         {
             qDebug() << startID;
-            getNode(startID)->get_edge(i+1)->setColor(QColor(colors->at(2)->text()));
+            getNode(startID)->get_edge(i+1)->setColor(QColor(color_fields[2]->text()));
             getNode(i+1)->setExploredTrue();
             DFS(i+1);
         }
     }
 }
 
-void GraphWidget::everyoneUnexplored()
+void GraphWidget::setAllExploredFalse()
 {
-    for(auto it = nodes.begin(); it != nodes.end(); ++it)
+    for(auto it : nodes)
     {
-        (*it)->setExploredFalse();
+        it->setExploredFalse();
     }
 }
 
-void GraphWidget::everyoneDefaultEdgeColor()
+void GraphWidget::setAllDefaultEdgeColor()
 {
     for(auto it = nodes.begin(); it != nodes.end(); ++it)
     {
@@ -479,7 +510,7 @@ void GraphWidget::everyoneDefaultEdgeColor()
             auto v = (*it)->get_neighbors();
             if(v[i] == true)
             {
-                (*it)->get_edge(i+1)->setColor(QColor(colors->at(1)->text()));
+                (*it)->get_edge(i+1)->setColor(QColor(color_fields[1]->text()));
             }
         }
     }
@@ -499,13 +530,13 @@ void GraphWidget::BFS(int startID)
         qDebug() << "Kawhi Leonard" << q.size();
         int s = q.dequeue();
 
-        for(size_t i = 0; i < getNode(s)->get_neighbors().size(); ++i)
+        for(int i = 0; i < getNode(s)->get_neighbors().size(); ++i)
         {
             qDebug() << "Paul George";
             if((getNode(s)->get_neighbors()[i]) && !(getNode(i+1)->getExplored()))
             {
                 qDebug() << "Lou Williams";
-                getNode(s)->get_edge(i+1)->setColor(QColor(colors->at(2)->text()));
+                getNode(s)->get_edge(i+1)->setColor(QColor(color_fields[2]->text()));
                 getNode(i+1)->setExploredTrue();
                 q.enqueue(i+1);
             }
