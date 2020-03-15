@@ -6,7 +6,7 @@ Design of nodes and edges includes (but is not limited to) using ID numbers to i
 having graph know which ID numbers are available, having nodes know which other nodes are its neighbors, 
 and using two nodes to identify edges.
 
-Daryan Sugandhi:
+Daryan Sugandhi: Front end design and implementation, including connecting interface to backend code. Software testing and debugging, including checking for memory leaks and redesigning software structure when required. Implemented randomization and color feature.
 
 Esam Izzat:
 
