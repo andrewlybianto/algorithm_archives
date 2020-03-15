@@ -5,31 +5,6 @@ Edge::Edge(GraphWidget *newGraph, Node *sourceNode, Node *destNode, QColor edge_
 {
     dest->setNeighborTrue(getSourceNode()->getID() );
     source->setNeighborTrue(getDestNode()->getID() );
-
-    qDebug() << "source" << getSourceNode()->getID();
-    for(int i = 0; i < getSourceNode()->get_neighbors().size(); ++i)
-    {
-        if(getSourceNode()->get_neighbors()[i])
-        {
-            qDebug() << i + 1 << "true";
-        }
-        else
-        {
-            qDebug() << i + 1 << "false";
-        }
-    }
-    qDebug() << "dest" << getDestNode()->getID();
-    for(int i = 0; i < getDestNode()->get_neighbors().size(); ++i)
-    {
-        if(getDestNode()->get_neighbors()[i])
-        {
-            qDebug() << i + 1 << "true";
-        }
-        else
-        {
-            qDebug() << i + 1 << "false";
-        }
-    }
 }
 
 Edge::~Edge()
@@ -39,31 +14,6 @@ Edge::~Edge()
 
     //remove from graphwidget edges
     graph->removeEdgeFromEdges(this);
-
-    qDebug() << "source" << getSourceNode()->getID();
-    for(int i = 0; i < getSourceNode()->get_neighbors().size(); ++i)
-    {
-        if(getSourceNode()->get_neighbors()[i])
-        {
-            qDebug() << i + 1 << "true";
-        }
-        else
-        {
-            qDebug() << i + 1 << "false";
-        }
-    }
-    qDebug() << "dest" << getDestNode()->getID();
-    for(int i = 0; i < getDestNode()->get_neighbors().size(); ++i)
-    {
-        if(getDestNode()->get_neighbors()[i])
-        {
-            qDebug() << i + 1 << "true";
-        }
-        else
-        {
-            qDebug() << i + 1 << "false";
-        }
-    }
 }
 
 Node* Edge::getSourceNode() const

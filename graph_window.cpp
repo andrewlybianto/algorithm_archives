@@ -488,7 +488,6 @@ void GraphWidget::DFS(int startID)
     {
         if(getNode(startID)->get_neighbors()[i] && !(getNode(i+1)->getExplored()))
         {
-            qDebug() << startID;
             getNode(startID)->get_edge(i+1)->setColor(QColor(color_fields[2]->text()));
             getNode(i+1)->setExploredTrue();
             DFS(i+1);
@@ -500,7 +499,10 @@ void GraphWidget::setAllExploredFalse()
 {
     for(auto it : nodes)
     {
-        it->setExploredFalse();
+        if(it != nullptr)
+        {
+            it->setExploredFalse();
+        }
     }
 }
 
@@ -508,12 +510,15 @@ void GraphWidget::setAllDefaultEdgeColor()
 {
     for(auto it = nodes.begin(); it != nodes.end(); ++it)
     {
-        for(int i = 0; i < (*it)->get_neighbors().size(); ++i)
+        if((*it) != nullptr)
         {
-            auto v = (*it)->get_neighbors();
-            if(v[i] == true)
+            for(int i = 0; i < (*it)->get_neighbors().size(); ++i)
             {
-                (*it)->get_edge(i+1)->setColor(QColor(color_fields[1]->text()));
+                auto v = (*it)->get_neighbors();
+                if(v[i] == true)
+                {
+                   (*it)->get_edge(i+1)->setColor(QColor(color_fields[1]->text()));
+                }
             }
         }
     }
@@ -530,15 +535,12 @@ void GraphWidget::BFS(int startID)
 
     while(!q.empty())
     {
-        qDebug() << "Kawhi Leonard" << q.size();
         int s = q.dequeue();
 
         for(int i = 0; i < getNode(s)->get_neighbors().size(); ++i)
         {
-            qDebug() << "Paul George";
             if((getNode(s)->get_neighbors()[i]) && !(getNode(i+1)->getExplored()))
             {
-                qDebug() << "Lou Williams";
                 getNode(s)->get_edge(i+1)->setColor(QColor(color_fields[2]->text()));
                 getNode(i+1)->setExploredTrue();
                 q.enqueue(i+1);
