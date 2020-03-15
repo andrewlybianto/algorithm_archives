@@ -1,8 +1,12 @@
 #include "main_window.h"
 #include "graph_window.h"
 
+// Default button size for the main window
 const QSize BTN_SIZE = QSize(700, 75);
+
+// Default button font for the main window
 const QString BTN_FONT = "font: 25pt; color: black;";
+
 const QColor DEFAULT_NODE_COLOR = "cyan";
 const QColor DEFAULT_EDGE_COLOR = "black";
 const QColor DEFAULT_ALGO_COLOR = "magenta";
@@ -22,23 +26,23 @@ MainWindow::MainWindow(QWidget *parent)
     stacked_widgets = new QStackedWidget;
     layout->addWidget(stacked_widgets);
 
-    // main page, widget index = 0
+    // Main page, widget index = 0
     MainPage *main_page = new MainPage(this);
     stacked_widgets->addWidget(main_page);
 
-    // about page, widget index = 1
+    // About page, widget index = 1
     AboutPage *about_page = new AboutPage(this);
     stacked_widgets->addWidget(about_page);
 
-    // settings page, widget index = 2
+    // Settings page, widget index = 2
     SettingsPage *settings_page = new SettingsPage(this);
     stacked_widgets->addWidget(settings_page);
 
-    // music
+    // Music
     connect(this, SIGNAL(stop_music()), main_page, SIGNAL(stop_music()));
     connect(this, SIGNAL(play_music()), main_page, SIGNAL(play_music()));
 
-    // background image
+    // Background image
     QPixmap background(":/img/bridges.jpg");
     background = background.scaled(this->size(), Qt::IgnoreAspectRatio);
     QPalette palette;
@@ -59,7 +63,6 @@ MainWindow::~MainWindow()
     delete stacked_widgets;
 }
 
-// Override method to get proper background
 void MainWindow::resizeEvent(QResizeEvent *event)
 {
     QPixmap background(":/img/bridges.jpg");
@@ -99,13 +102,11 @@ MainPage::MainPage(QWidget *parent)
     QGridLayout *layout = new QGridLayout;
     setLayout(layout);
 
-    // title
     QLabel *title = new QLabel("Algorithm Archives");
     title->setAlignment(Qt::AlignHCenter);
     title->setStyleSheet("QLabel { font: 130pt; color: blue;}");
     layout->addWidget(title, 0, 0);
 
-    // buttons
     std::vector<QPushButton*> buttons;
     QPushButton *simulate = new QPushButton("Simulate");
     QPushButton *about = new QPushButton("About");
@@ -132,7 +133,7 @@ MainPage::MainPage(QWidget *parent)
         layout->setAlignment(it, Qt::AlignHCenter);
     }
 
-    // background music
+    // Background music
     QMediaPlayer *music = new QMediaPlayer;
     music->setMedia(QUrl("qrc:/audio/main_music.mp3"));
     music->play();
@@ -157,7 +158,7 @@ AboutPage::AboutPage(QWidget *parent)
     back->setStyleSheet(BTN_FONT);
     layout->setAlignment(back, Qt::AlignHCenter);
 
-    // contents
+    // Contents
     QLabel *text = new QLabel;
     text->setText("Programmers: Gilbert Neuner, Daryan Sugandhi, Esam Izzat, Andrew Lybianto\n"
                   "Description: This project executes Depth First Search and Breadth First Search on graphs.\n"
@@ -193,7 +194,7 @@ SettingsPage::SettingsPage(QWidget *parent)
     QLineEdit *algo_color = new QLineEdit;
     algo_color->setText(DEFAULT_ALGO_COLOR.name());
 
-    // index: 0: node, 1: edge, 2: algorithm
+    // Index: 0: node, 1: edge, 2: algorithm
     color_fields.push_back(node_color);
     color_fields.push_back(edge_color);
     color_fields.push_back(algo_color);
@@ -205,7 +206,7 @@ SettingsPage::SettingsPage(QWidget *parent)
     layout->addWidget(algo_color_name, 4, 0);
     layout->addWidget(algo_color, 5, 0);
 
-    // buttons
+    // Buttons
     std::vector<QPushButton*> buttons;
     QPushButton *stop = new QPushButton("Stop music");
     QPushButton *play = new QPushButton("Play music");

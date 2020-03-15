@@ -6,12 +6,16 @@
 #include "node.h"
 #include "graph_window.h"
 
+// Forward reference
 class Node;
 class GraphWidget;
 
+// Edge as an object between two nodes
 class Edge : public QGraphicsItem
 {
 public:
+    // Create an instance of an edge on newGraph, starting from sourceNode to destNode
+    // with color edge_color
     Edge(GraphWidget *newGraph, Node *sourceNode, Node *destNode, QColor edge_color);
     ~Edge() override;
 

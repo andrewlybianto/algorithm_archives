@@ -3,12 +3,13 @@
 
 #include "libraries.h"
 
-// forward reference
+// Forward reference
 class MainPage;
 class SimWindow;
 class AboutPage;
 class SettingsPage;
 
+// Main window where the program will start
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -16,6 +17,7 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow() override;
 
+    // Method to get proper background
     void resizeEvent(QResizeEvent *event) override;
 
 signals:
@@ -23,6 +25,7 @@ signals:
     void play_music();
 
 public slots:
+    // Functions to navigate the widgets
     void go_to_sim();
     void go_to_about();
     void go_to_settings();
@@ -33,6 +36,7 @@ private:
     std::vector<QLineEdit*> color_fields;
 };
 
+// Skeleton widget for pages
 class Page : public QWidget
 {
     Q_OBJECT
@@ -40,6 +44,7 @@ public:
     virtual ~Page();
 };
 
+// Main page widget consisting of main navigation buttons
 class MainPage : public Page
 {
     Q_OBJECT
@@ -51,6 +56,7 @@ signals:
     void play_music();
 };
 
+// About page widget consisting of information
 class AboutPage : public Page
 {
     Q_OBJECT
@@ -58,6 +64,7 @@ public:
     AboutPage(QWidget *parent = nullptr);
 };
 
+// Settings page widget consisting of color and music settings
 class SettingsPage : public Page
 {
     Q_OBJECT
