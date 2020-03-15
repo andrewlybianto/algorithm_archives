@@ -33,10 +33,10 @@ public:
 
     Node* getNode(int id) const;
 
-    //?
+    // Informs every node that the node with ID pos + 1 is no longer its neighbor, used when a node is deleted
     void everyoneFalse(int pos);
 
-    //?
+    // Informs every node to push_back a false into its neighbors vector, used when a node is constructed and is not neighbors with any current node
     void everyonePushFalse();
 
     // Switches the ID, used when a node is deleted
