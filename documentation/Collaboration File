@@ -1,10 +1,7 @@
 Overall, the project was a team effort. Although we divided the work, most components of the project were worked on by multiple
 group members.
 
-Gilbert Neuner: Worked on design and painting of nodes and edges, implemented DFS and BFS, worked on presentation.
-Design of nodes and edges includes (but is not limited to) using ID numbers to identify nodes, 
-having graph know which ID numbers are available, having nodes know which other nodes are its neighbors, 
-and using two nodes to identify edges.
+Gilbert Neuner: Back end design and implementation of node and edge classes. This includes using ID numbers to identify nodes, having nodes know which other nodes are its neighbors, and using two nodes to identify edges.  Implemented DFS and BFS. Helped prepare presentation for class.
 
 Daryan Sugandhi: Front end design and implementation, including connecting interface to backend code. Software testing and debugging, including checking for memory leaks and redesigning software structure when required. Implemented randomization and color feature.
 
