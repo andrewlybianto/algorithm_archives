@@ -1,5 +1,6 @@
 #include "edge.h"
 
+// Constructor will change the corresponding neighbors connected with the edges to true
 Edge::Edge(GraphWidget *newGraph, Node *sourceNode, Node *destNode, QColor edge_color)
     : graph(newGraph), source(sourceNode), dest(destNode), sourcePoint(sourceNode->getPoint()), destPoint(destNode->getPoint()), color(edge_color)
 {
@@ -7,12 +8,13 @@ Edge::Edge(GraphWidget *newGraph, Node *sourceNode, Node *destNode, QColor edge_
     source->setNeighborTrue(getDestNode()->getID() );
 }
 
+// Destructor will change the corresponding neighbors connected with the edges to false
 Edge::~Edge()
 {
     dest->setNeighborFalse(getSourceNode()->getID() );
     source->setNeighborFalse(getDestNode()->getID() );
 
-    //remove from graphwidget edges
+    // remove from graphwidget edges
     graph->removeEdgeFromEdges(this);
 }
 

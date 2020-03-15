@@ -1,16 +1,36 @@
 #include "graph_window.h"
 
+// Width of widget
 const int WIDTH = 400;
+
+// Height of widget
 const int HEIGHT = 400;
+
+// The distance between nodes to avoid collision, including size of nodes
 const int NODE_SEPARATION = 50;
+
+// The maximum x coordinate
 const int X_COORD = (-1)*WIDTH / 2;
+
+// The maximum y coordinate
 const int Y_COORD = (-1)*HEIGHT / 2;
+
+// Transform the x coordinate to account collision
 const int X_RANGE = (-1)*X_COORD / NODE_SEPARATION;
+
+// Transform the y coordinate to account collision
 const int Y_RANGE = (-1)*Y_COORD / NODE_SEPARATION;
+
+// The number of points that a node can occupy the x axis
 const int X_NUMBER_OF_POINTS = WIDTH / NODE_SEPARATION + 1;
+
+// The number of points that a node can occupy the y axis
 const int Y_NUMBER_OF_POINTS = HEIGHT / NODE_SEPARATION + 1;
+
+// The total number of points that a node can occupy in the widget
 const int TOT_NUMBER_OF_POINTS = X_NUMBER_OF_POINTS * Y_NUMBER_OF_POINTS;
 
+// Constructor will create a window that consists of both the buttons and graph widget
 GraphWindow::GraphWindow(QWidget *parent, const std::vector<QLineEdit*>& col)
     : QMainWindow(parent)
 {
@@ -68,6 +88,7 @@ GraphWindow::GraphWindow(QWidget *parent, const std::vector<QLineEdit*>& col)
 
     QPushButton *home = new QPushButton("Exit");
 
+    // Set interface positions
     std::vector<QWidget*> objects;
     objects.push_back(x_coord);
     objects.push_back(y_coord);
@@ -95,6 +116,7 @@ GraphWindow::GraphWindow(QWidget *parent, const std::vector<QLineEdit*>& col)
         interface_layout->setAlignment(it, Qt::AlignHCenter);
     }
 
+    // Set interface functions
     connect(x_coord, SIGNAL(valueChanged(int)), graph, SIGNAL(x_coord_changed(int)));
     connect(y_coord, SIGNAL(valueChanged(int)), graph, SIGNAL(y_coord_changed(int)));
     connect(id, SIGNAL(valueChanged(int)), graph, SIGNAL(selected_id_changed(int)));
@@ -140,6 +162,7 @@ GraphWidget::GraphWidget(QWidget *parent, const std::vector<QLineEdit*>& col)
 
     coordinates = QVector<bool>(TOT_NUMBER_OF_POINTS, false);
 
+    // Set spinbox values
     connect(this, SIGNAL(x_coord_changed(int)), this, SLOT(set_x_coord(int)));
     connect(this, SIGNAL(y_coord_changed(int)), this, SLOT(set_y_coord(int)));
     connect(this, SIGNAL(selected_id_changed(int)), this, SLOT(set_selected_id(int)));
@@ -288,7 +311,6 @@ void GraphWidget::run_bfs()
 
 void GraphWidget::generate_random_graph()
 {
-    // CHECK sometimes crashes due to too many loop in adding edges, better algorithm needed
     if(!(nodes.empty()))
     {
         QErrorMessage *err = new QErrorMessage;
@@ -296,7 +318,7 @@ void GraphWidget::generate_random_graph()
         return;
     }
 
-    // prompt for number of edges
+    // Prompt for number of edges
     QDialog *prompt = new QDialog;
     QWidget *content = new QWidget;
     QGridLayout *layout = new QGridLayout(content);
@@ -304,7 +326,8 @@ void GraphWidget::generate_random_graph()
     QLabel *info = new QLabel;
     info->setText("Select number of edges:");
     QSpinBox *edges = new QSpinBox;
-    // theorem from graph theory
+
+    // Theorem from graph theory
     edges->setRange(random_nodes - 1, random_nodes * (random_nodes - 1) / 2);
     QPushButton *ok_button = new QPushButton("Confirm");
 
@@ -353,10 +376,10 @@ void GraphWidget::addNode(qreal new_x, qreal new_y)
 {
     ++n;
 
-    //construct node
+    // Construct node
     Node *node = new Node(this, new_x, new_y, QColor(color_fields[0]->text()));
 
-    //set ID
+    // Set ID
     if(isIDTaken.empty())
     {
         node->setID(1);
@@ -398,7 +421,7 @@ void GraphWidget::addNode(qreal new_x, qreal new_y)
         }
     }
 
-    //display node
+    // Display node
     scene()->addItem(node);
     node->setPos(new_x, new_y);
 }
@@ -526,10 +549,10 @@ void GraphWidget::setAllDefaultEdgeColor()
 
 void GraphWidget::BFS(int startID)
 {
-    //create a queue for BFS
+    // Create a queue for BFS
     QQueue<int> q;
 
-    //mark the current node as explored and enqueue it
+    // Mark the current node as explored and enqueue it
     getNode(startID)->setExploredTrue();
     q.enqueue(startID);
 

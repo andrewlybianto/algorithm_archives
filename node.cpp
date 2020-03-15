@@ -1,5 +1,6 @@
 #include "node.h"
 
+// Constructor will initialize the neighbors of this node to all false
 Node::Node(GraphWidget *graphWidget, qreal new_x, qreal new_y, QColor node_color)
     : graph(graphWidget), color(node_color)
 {
@@ -11,19 +12,19 @@ Node::Node(GraphWidget *graphWidget, qreal new_x, qreal new_y, QColor node_color
 
 Node::~Node()
 {
-    //every node that has this as a neighbor should not anymore
+    // Every node with this as a neighbor should be false
     for(int i = 0; i < neighbors.size(); ++i)
     {
         if(neighbors[i])
         {
-            //destroy edge
+            // Destroy edges incident to this node
             get_edge(i+1)->~Edge();
 
             graph->getNode(i+1)->setNeighborFalse(getID());
         }
     }
 
-    //deal with nodes and ids
+    // Deal with nodes and ids
     graph->nullNodes(getID()-1);
     graph->flipIsIDTaken(getID()-1);
 }
